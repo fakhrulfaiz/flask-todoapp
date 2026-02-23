@@ -81,7 +81,7 @@ def test_index_page(client):
     """The HTML page should render with a 200 status."""
     res = client.get("/")
     assert res.status_code == 200
-    assert b"Todo App" in res.data
+    assert b"My Tasks" in res.data
 
 
 def test_ui_create_todo(client):
