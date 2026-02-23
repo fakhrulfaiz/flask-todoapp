@@ -1,180 +1,347 @@
 {% extends "base.html" %}
 
-{% block title %}Todo App — My Tasks{% endblock %}
+{% block title %}Tasks{% endblock %}
 
 {% block extra_styles %}
-/* ---------- Add-todo form ---------- */
+/* ── Layout ── */
+.app-wrapper {
+  max-width: 640px;
+  margin: 60px auto;
+  padding: 0 20px;
+}
+
+/* ── Header ── */
+.app-header {
+  margin-bottom: 28px;
+}
+
+.app-header h1 {
+  font-size: 20px;
+  font-weight: 600;
+  color: #111;
+  letter-spacing: -0.2px;
+}
+
+.app-header p {
+  margin-top: 4px;
+  font-size: 13px;
+  color: #888;
+}
+
+/* ── Add form ── */
 .add-form {
   display: flex;
-  gap: 0.6rem;
-  margin-bottom: 1.8rem;
+  gap: 8px;
+  margin-bottom: 24px;
 }
 
 .add-form input[type="text"] {
   flex: 1;
-  padding: 0.75rem 1rem;
-  border-radius: 10px;
-  border: 1.5px solid rgba(167, 139, 250, 0.3);
-  background: rgba(255, 255, 255, 0.05);
-  color: #e0e0e0;
-  font-size: 1rem;
+  height: 38px;
+  padding: 0 12px;
+  border: 1px solid #d1d1d1;
+  border-radius: 6px;
+  background: #fff;
+  font-family: inherit;
+  font-size: 14px;
+  color: #111;
   outline: none;
-  transition: border-color 0.2s, background 0.2s;
+  transition: border-color 0.15s;
 }
 
-.add-form input[type="text"]::placeholder { color: #6b7280; }
+.add-form input[type="text"]::placeholder { color: #bbb; }
+.add-form input[type="text"]:focus { border-color: #555; }
 
-.add-form input[type="text"]:focus {
-  border-color: #a78bfa;
-  background: rgba(255, 255, 255, 0.09);
-}
-
-.btn {
-  padding: 0.72rem 1.2rem;
-  border: none;
-  border-radius: 10px;
-  font-size: 0.95rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: opacity 0.2s, transform 0.1s;
-}
-.btn:active { transform: scale(0.97); }
-
-.btn-primary {
-  background: linear-gradient(135deg, #7c3aed, #2563eb);
+.btn-add {
+  height: 38px;
+  padding: 0 16px;
+  background: #111;
   color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s;
+  white-space: nowrap;
 }
-.btn-primary:hover { opacity: 0.88; }
+.btn-add:hover { background: #333; }
 
-.btn-sm { padding: 0.35rem 0.8rem; font-size: 0.82rem; border-radius: 7px; }
-
-.btn-toggle {
-  background: rgba(167, 139, 250, 0.15);
-  color: #a78bfa;
-  border: 1px solid rgba(167, 139, 250, 0.3);
-}
-.btn-toggle:hover { background: rgba(167, 139, 250, 0.28); }
-
-.btn-toggle.done {
-  background: rgba(52, 211, 153, 0.15);
-  color: #34d399;
-  border-color: rgba(52, 211, 153, 0.3);
-}
-.btn-toggle.done:hover { background: rgba(52, 211, 153, 0.28); }
-
-.btn-danger {
-  background: rgba(239, 68, 68, 0.12);
-  color: #f87171;
-  border: 1px solid rgba(239, 68, 68, 0.25);
-}
-.btn-danger:hover { background: rgba(239, 68, 68, 0.25); }
-
-/* ---------- Todo list ---------- */
-.todo-list {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-
-.todo-card {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  padding: 1rem 1.2rem;
-  border-radius: 12px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(6px);
-  transition: transform 0.15s, border-color 0.2s;
-}
-.todo-card:hover { transform: translateY(-1px); border-color: rgba(167, 139, 250, 0.35); }
-
-.todo-card.done-card { opacity: 0.55; }
-
-.todo-title {
-  flex: 1;
-  font-size: 1rem;
-  word-break: break-word;
-}
-
-.todo-card.done-card .todo-title { text-decoration: line-through; color: #6b7280; }
-
-.todo-actions { display: flex; gap: 0.5rem; flex-shrink: 0; }
-
-/* ---------- Empty state ---------- */
-.empty {
-  text-align: center;
-  padding: 3rem 1rem;
-  color: #6b7280;
-}
-.empty-icon { font-size: 3rem; margin-bottom: 0.5rem; }
-
-/* ---------- Stats bar ---------- */
+/* ── Stats ── */
 .stats {
   display: flex;
   justify-content: space-between;
-  font-size: 0.82rem;
-  color: #9ca3af;
-  margin-bottom: 1rem;
-  padding: 0 0.2rem;
+  font-size: 12px;
+  color: #999;
+  margin-bottom: 12px;
+  padding: 0 2px;
 }
-.stats span { color: #a78bfa; font-weight: 600; }
+
+/* ── Todo list ── */
+.todo-list {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #e5e5e5;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.todo-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 13px 16px;
+  border-bottom: 1px solid #f0f0f0;
+  transition: background 0.1s;
+}
+.todo-item:last-child { border-bottom: none; }
+.todo-item:hover { background: #fafafa; }
+
+/* Checkbox-style toggle */
+.toggle-btn {
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  border: 1.5px solid #ccc;
+  background: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  color: transparent;
+  flex-shrink: 0;
+  transition: border-color 0.15s, background 0.15s;
+  padding: 0;
+}
+.toggle-btn:hover { border-color: #555; }
+
+.todo-item.is-done .toggle-btn {
+  background: #111;
+  border-color: #111;
+  color: #fff;
+}
+
+/* Title */
+.todo-title {
+  flex: 1;
+  font-size: 14px;
+  color: #111;
+  line-height: 1.4;
+}
+.todo-item.is-done .todo-title {
+  color: #aaa;
+  text-decoration: line-through;
+}
+
+/* Delete button */
+.delete-btn {
+  width: 26px;
+  height: 26px;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  color: #ccc;
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.15s, background 0.15s;
+  padding: 0;
+  opacity: 0;
+}
+.todo-item:hover .delete-btn {
+  opacity: 1;
+}
+.delete-btn:hover {
+  color: #e55;
+  background: #fff0f0;
+}
+
+/* ── Empty state ── */
+.empty-state {
+  text-align: center;
+  padding: 48px 24px;
+  color: #bbb;
+  border: 1px solid #e5e5e5;
+  border-radius: 8px;
+  background: #fff;
+}
+.empty-state p { font-size: 14px; margin-top: 8px; }
 {% endblock %}
 
 {% block content %}
-<!-- Add-todo form -->
-<form class="add-form" method="post" action="/ui/todos">
-  <input
-    type="text"
-    name="title"
-    placeholder="What needs to be done?"
-    autocomplete="off"
-    required
-  />
-  <button type="submit" class="btn btn-primary">Add</button>
-</form>
+<div class="app-wrapper">
 
-<!-- Stats -->
-{% if todos %}
-{% set done_count = todos | selectattr("done") | list | length %}
-<div class="stats">
-  <div><span>{{ todos | length }}</span> total tasks</div>
-  <div><span>{{ done_count }}</span> completed &nbsp;·&nbsp; <span>{{ todos | length - done_count }}</span> remaining</div>
-</div>
-{% endif %}
+  <div class="app-header">
+    <h1>My Tasks</h1>
+    {% if todos %}
+    {% set done_count = todos | selectattr("done") | list | length %}
+    <p>{{ done_count }} of {{ todos | length }} completed</p>
+    {% else %}
+    <p>No tasks yet</p>
+    {% endif %}
+  </div>
 
-<!-- Todo list -->
-<div class="todo-list">
+  <!-- Add task -->
+  <form class="add-form" id="add-form" method="post" action="/ui/todos">
+    <input
+      id="add-input"
+      type="text"
+      name="title"
+      placeholder="Add a task…"
+      autocomplete="off"
+      required
+    />
+    <button type="submit" class="btn-add">Add task</button>
+  </form>
+
+  <!-- Task list -->
   {% if todos %}
+  <div class="todo-list" id="todo-list">
     {% for todo in todos %}
-    <div class="todo-card {% if todo.done %}done-card{% endif %}">
+    <div class="todo-item {% if todo.done %}is-done{% endif %}" data-id="{{ todo.id }}">
+
+      <!-- Toggle checkbox -->
+      <button class="toggle-btn" title="Toggle done">
+        {% if todo.done %}✓{% endif %}
+      </button>
+
       <span class="todo-title">{{ todo.title }}</span>
 
-      <div class="todo-actions">
-        <!-- Toggle done/undone -->
-        <form method="post" action="/ui/todos/{{ todo.id }}/toggle">
-          <button
-            type="submit"
-            class="btn btn-sm btn-toggle {% if todo.done %}done{% endif %}"
-            title="{% if todo.done %}Mark as undone{% else %}Mark as done{% endif %}"
-          >
-            {% if todo.done %}✓ Done{% else %}○ Todo{% endif %}
-          </button>
-        </form>
+      <!-- Delete -->
+      <button class="delete-btn" title="Delete">×</button>
 
-        <!-- Delete -->
-        <form method="post" action="/ui/todos/{{ todo.id }}/delete"
-              onsubmit="return confirm('Delete this todo?')">
-          <button type="submit" class="btn btn-sm btn-danger" title="Delete">✕</button>
-        </form>
-      </div>
     </div>
     {% endfor %}
+  </div>
+
   {% else %}
-    <div class="empty">
-      <div class="empty-icon">📋</div>
-      <p>No tasks yet — add one above!</p>
-    </div>
+  <div class="todo-list" id="todo-list"></div>
+  <div class="empty-state" id="empty-state">
+    <span style="font-size:28px">☑</span>
+    <p>All clear — add a task above to get started.</p>
+  </div>
   {% endif %}
+
 </div>
+
+<script>
+  const list = document.getElementById('todo-list');
+  const emptyState = document.getElementById('empty-state');
+  const subtitle = document.querySelector('.app-header p');
+
+  function updateSubtitle() {
+    const items = list ? list.querySelectorAll('.todo-item') : [];
+    const done  = list ? list.querySelectorAll('.todo-item.is-done').length : 0;
+    if (subtitle) {
+      subtitle.textContent = items.length
+        ? `${done} of ${items.length} completed`
+        : 'No tasks yet';
+    }
+    if (emptyState) {
+      emptyState.style.display = (!list || items.length === 0) ? 'block' : 'none';
+    }
+    if (list) {
+      list.style.display = list.querySelectorAll('.todo-item').length === 0 ? 'none' : '';
+    }
+  }
+
+  function makeItem(todo) {
+    const div = document.createElement('div');
+    div.className = 'todo-item' + (todo.done ? ' is-done' : '');
+    div.dataset.id = todo.id;
+    div.innerHTML = `
+      <button class="toggle-btn" title="Toggle done">${todo.done ? '✓' : ''}</button>
+      <span class="todo-title">${todo.title}</span>
+      <button class="delete-btn" title="Delete">×</button>
+    `;
+    bindItem(div);
+    return div;
+  }
+
+  function bindItem(item) {
+    // Toggle — optimistic: flip UI instantly, rollback if server fails
+    item.querySelector('.toggle-btn').addEventListener('click', () => {
+      const id = item.dataset.id;
+      const wasDone = item.classList.contains('is-done');
+
+      // 1. Update DOM immediately
+      item.classList.toggle('is-done');
+      item.querySelector('.toggle-btn').textContent =
+        item.classList.contains('is-done') ? '✓' : '';
+      updateSubtitle();
+
+      // 2. Fire request in background — no await
+      fetch(`/ui/todos/${id}/toggle`, { method: 'POST' })
+        .then(res => {
+          if (!res.ok) throw new Error('Server error');
+        })
+        .catch(() => {
+          // Rollback on failure
+          if (wasDone) item.classList.add('is-done');
+          else item.classList.remove('is-done');
+          item.querySelector('.toggle-btn').textContent = wasDone ? '✓' : '';
+          updateSubtitle();
+        });
+    });
+
+    // Delete — optimistic: remove row instantly, rollback if server fails
+    item.querySelector('.delete-btn').addEventListener('click', () => {
+      if (!confirm('Delete this task?')) return;
+      const id = item.dataset.id;
+      const parent = item.parentNode;
+      const nextSibling = item.nextSibling;
+
+      // 1. Remove from DOM immediately
+      item.remove();
+      updateSubtitle();
+
+      // 2. Fire request in background — no await
+      fetch(`/ui/todos/${id}/delete`, { method: 'POST' })
+        .then(res => {
+          if (!res.ok) throw new Error('Server error');
+        })
+        .catch(() => {
+          // Rollback — re-insert item at its original position
+          parent.insertBefore(item, nextSibling);
+          updateSubtitle();
+        });
+    });
+  }
+
+  // Bind existing items
+  if (list) {
+    list.querySelectorAll('.todo-item').forEach(bindItem);
+    updateSubtitle();
+  }
+
+  // Async add
+  const addForm = document.getElementById('add-form');
+  const addInput = document.getElementById('add-input');
+  if (addForm) {
+    addForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const title = addInput.value.trim();
+      if (!title) return;
+      const res = await fetch('/todos', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title })
+      });
+      if (res.ok) {
+        const todo = await res.json();
+        if (!list) location.reload(); // fallback if no list element yet
+        list.style.display = '';
+        list.appendChild(makeItem(todo));
+        addInput.value = '';
+        updateSubtitle();
+      }
+    });
+  }
+</script>
 {% endblock %}
