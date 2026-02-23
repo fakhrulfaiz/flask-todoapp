@@ -1,5 +1,5 @@
 import pytest
-from app import app, db, Todo
+from app import app, db
 
 
 @pytest.fixture
