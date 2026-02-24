@@ -1,0 +1,13 @@
+[run]
+source = app
+omit =
+    venv/*
+    tests/*
+    conftest.py
+
+[report]
+show_missing = true
+skip_empty = true
+
+[html]
+directory = htmlcov
