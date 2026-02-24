@@ -43,8 +43,8 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
-      - name: Run tests
-        run: pytest tests/ -v
+      - name: Run tests with coverage
+        run: pytest tests/ -v --cov=app --cov-report=term-missing --cov-fail-under=80
 
   docker:
     name: Build & Push to GHCR
